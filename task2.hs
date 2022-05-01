@@ -8,7 +8,7 @@ nlcc image value = do
     -- column variable contains number of columns present in image/matrix.
     let column = length (image !! 0)
 
-    -- we traverse through each and every cell(row,column) and stores largest number of connected pixels. 'l' is a list which contains all the connected pixels in that row and column.
+    -- we traverse through each and every cell(row,column) and stores largest number of connected pixels. 'l' is a list that contains all the connected pixels starting from that row and column index.
     --      Example : l = [0,0,0,19,19,..........,0] 
     let l = [first (traverseMatrix image i j value) | i<-[0..row],j<-[0..column]]
 
@@ -27,24 +27,23 @@ first (x,_) = x
 traverseMatrix :: [[Int]] -> Int -> Int -> Int -> (Int, [[Int]])
 traverseMatrix image row column value =  do
 
-    -- isValidMove is the base function that helps to validate whether we can traverse through a given row and column.
+    -- isValidMove is the base function that helps to validate whether we can traverse through a given row and column index.
     --          Example: If given row or column index is greather than matrix/image size so, in that case isValidMove fucntion returns False.
     if (isValidMove image row column value) == False 
         then do
             (0,image)
     else do
-        -- 
-    --If the value of a particular cell image[row][column] is counted, we update that value to -1 to avoid repetitions.
+    -- If the value of a particular cell image[row][column] is counted, we update that value to -1 to avoid repetitions.
     --          Example: imgage[1][1] = -1,
         let updated_image = updateImage image row column
 
-        -- Below line traverse through right direction. returns => (right connected pixels, updated image)
+        -- Below line traverse through right direction. returns => (count of right connected pixels, updated image)
         let (right, updated_image_right) = traverseMatrix updated_image row (column+1) value
-        -- Below line traverse through left direction. returns => (left connected pixels, updated image)
+        -- Below line traverse through left direction. returns => (count of left connected pixels, updated image)
         let (left, updated_image_left) = traverseMatrix updated_image_right row (column-1) value
-        -- Below line traverse through bottom direction. returns => (bottom connected pixels, updated image)
+        -- Below line traverse through bottom direction. returns => (count of bottom connected pixels, updated image)
         let (bottom, updated_image_bottom) = traverseMatrix updated_image_left (row+1) column value
-        -- below line traverse through top direction. returns => (top connected pixels, updated image)
+        -- below line traverse through top direction. returns => (count of top connected pixels, updated image)
         let (top, updated_image_top) = traverseMatrix updated_image_bottom (row-1) column value
 
         -- Adding all the connected pixels in 4 directions.
@@ -66,7 +65,7 @@ isValidMove image row column value = do
 
 
 
--- getValue fucntion takes matix row, column as input parameters and return the value present in that row, column. If row, column index are greater than matrix/image size it returns -1.
+-- getValue fucntion takes matix row, column as input parameters and return the value present in that row, column index. If row, column index are greater than matrix/image size it returns -1.
 --                  Example: getValue [[0,1],[1,100]] 1 1 => 100
 --                  Example: getValue [[0,1],[1,0]]  3 3 => -1 
 getValue :: [[Int]] -> Int -> Int -> Int
